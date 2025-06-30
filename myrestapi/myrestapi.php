@@ -131,6 +131,78 @@ class MyRestApi extends Module
                     'controller' => 'token',
                 ],
             ],
+
+            // Category Routes
+            'myrestapi_categories_list' => [
+                'controller' => 'categories',
+                'rule' => 'myrestapi/categories',
+                'keywords' => [],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'categories',
+                ],
+            ],
+            'myrestapi_categories_item' => [
+                'controller' => 'categories',
+                'rule' => 'myrestapi/categories/{id_category}',
+                'keywords' => [
+                    'id_category' => ['regexp' => '[0-9]+', 'param' => 'id_category'],
+                ],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'categories',
+                ],
+            ],
+
+            // CMS Page Routes
+            'myrestapi_cms_pages_list' => [
+                'controller' => 'cms',
+                'rule' => 'myrestapi/cms/pages', // Using /cms/pages for clarity
+                'keywords' => [],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'cms',
+                ],
+            ],
+            'myrestapi_cms_pages_item' => [
+                'controller' => 'cms',
+                'rule' => 'myrestapi/cms/pages/{id_cms_page}',
+                'keywords' => [
+                    'id_cms_page' => ['regexp' => '[0-9]+', 'param' => 'id_cms_page'],
+                ],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'cms',
+                ],
+            ],
+
+            // CMS Category Routes
+            'myrestapi_cms_categories_list' => [
+                'controller' => 'cms', // Still uses CmsController
+                'rule' => 'myrestapi/cms/categories',
+                'keywords' => [],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'cms',
+                ],
+            ],
+            'myrestapi_cms_categories_item' => [
+                'controller' => 'cms', // Still uses CmsController
+                'rule' => 'myrestapi/cms/categories/{id_cms_category_object}', // param name used by CmsController
+                'keywords' => [
+                    'id_cms_category_object' => ['regexp' => '[0-9]+', 'param' => 'id_cms_category_object'],
+                ],
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'myrestapi',
+                    'controller' => 'cms',
+                ],
+            ],
         ];
         return $routes;
     }
