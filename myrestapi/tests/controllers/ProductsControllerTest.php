@@ -17,100 +17,105 @@ use PHPUnit\Framework\TestCase;
  *
  * The following test methods are placeholders for what would be tested.
  */
+use MyRestApi\Services\ProductService;
+use MyRestApi\Controllers\Core\AbstractResourceController; // For type hinting/understanding structure
+use MyRestApiProductsModuleFrontController; // The actual controller
+
 class ProductsControllerTest extends TestCase
 {
+    private $mockProductService;
+    private $productsController;
+
     protected function setUp(): void
     {
-        // Mock PrestaShop Context, Link, Language, Shop, Employee (for auth if needed)
-        // Mock Product, StockAvailable, Category, Manufacturer, etc.
-        // Mock Db::getInstance() to return a mock database connection
-        // Mock Configuration::get() for any config values used
-        // Mock Tools::getValue(), Tools::file_get_contents()
+        // Mock the ProductService
+        $this->mockProductService = $this->createMock(ProductService::class);
 
-        // Example Mocking (very basic, would need a library like Mockery or PHPUnit's mocks)
-        /*
-        if (!class_exists('Context')) { $this->createMock('Context'); }
-        if (!class_exists('Product')) { $this->createMock('Product'); }
-        // ... and so on for all dependencies.
-        */
+        // Instantiate the controller
+        // This is tricky because the controller instantiates the service in its constructor.
+        // A better DI approach would allow injecting the mock service.
+        // For now, we'll have to rely on testing methods that might be callable after construction,
+        // or conceptually testing the flow.
+
+        // To truly test ProductsController with a mock service, ProductsController would need
+        // to allow service injection, or we'd use reflection to replace the service instance.
+        // $this->productsController = new MyRestApiProductsModuleFrontController(); // This will use real service
+        // For conceptual test, we assume we can make it use the mock.
+
         $this->markTestSkipped(
-            'ProductsController tests require significant mocking of PrestaShop core or a live PS environment.'
+            'ProductsController tests are conceptual due to service instantiation in constructor. DI needed for pure unit tests of controller logic.'
         );
     }
 
-    public function testListProductsNoFilters()
+    public function testListProductsDelegatesToService()
     {
-        // 1. Setup Mocks:
-        //    - Context, Language, Shop
-        //    - Db::getInstance()->executeS() to return a sample array of product IDs
-        //    - Product constructor to return mock Product objects when called with these IDs
-        //    - ProductRTO mock or use real one with mock Product
-        //    - Tools::getValue() for pagination parameters
-        // 2. Instantiate ProductsController (potentially with mocked dependencies injected)
-        // 3. Call $controller->run() or $controller->display() (if GET)
-        // 4. Assertions:
-        //    - Check http_response_code() (mocked or via output buffering)
-        //    - Check JSON response structure (mocked or via output buffering)
-        //    - Verify pagination info is correct
-        $this->assertTrue(true); // Placeholder
+        // Conceptual:
+        // 1. Mock Tools::getValue for pagination, sort, filter params.
+        // 2. Configure $this->mockProductService->expects($this->once())->method('getList')
+        //    ->with(expectedFilters, expectedSort, expectedPage, expectedLimit)
+        //    ->willReturn(['data' => [1, 2], 'total' => 2]);
+        // 3. Configure $this->mockProductService->expects($this->any())->method('getById')
+        //    ->willReturnCallback(function($id) { /* return mock Product object */ });
+        // 4. Configure $this->mockProductService->method('getRtoClass')->willReturn(ProductRTO::class);
+        // 5. If ProductsController allowed service injection:
+        //    $controller = new MyRestApiProductsModuleFrontController($this->mockProductService);
+        //    $controller->display(); // or specific method if refactored from display
+        // 6. Assert that sendResponse was called with expected data (needs output buffering or specific mock for sendResponse).
+        $this->assertTrue(true);
     }
 
-    public function testGetSpecificProductFound()
+    public function testGetSpecificProductDelegatesToService()
     {
-        // 1. Setup Mocks:
-        //    - Tools::getValue('id_product') to return a valid ID
-        //    - Product constructor to return a loaded mock Product object
-        //    - ProductRTO
-        // 2. Instantiate and run controller
-        // 3. Assertions:
-        //    - HTTP 200
-        //    - Correct product data in JSON response
-        $this->assertTrue(true); // Placeholder
+        // Conceptual:
+        // 1. Mock Tools::getValue('id_product') to return a valid ID.
+        // 2. Configure $this->mockProductService->expects($this->once())->method('getById')
+        //    ->with(VALID_ID)
+        //    ->willReturn(/* mock Product object */);
+        // 3. Configure $this->mockProductService->method('getRtoClass')->willReturn(ProductRTO::class);
+        // 4. Instantiate controller (with service injection) and call display().
+        // 5. Assert sendResponse called with 200 and RTO data.
+        $this->assertTrue(true);
     }
 
-    public function testGetSpecificProductNotFound()
+    public function testGetSpecificProductNotFoundDelegatesAndHandles()
     {
-        // 1. Setup Mocks:
-        //    - Tools::getValue('id_product') to return an ID
-        //    - Product constructor to return a mock Product object where Validate::isLoadedObject($product) is false
-        // 2. Instantiate and run controller
-        // 3. Assertions:
-        //    - HTTP 404
-        //    - Error message in JSON response
-        $this->assertTrue(true); // Placeholder
+        // Conceptual:
+        // 1. Mock Tools::getValue('id_product') to return an ID.
+        // 2. Configure $this->mockProductService->expects($this->once())->method('getById')
+        //    ->with(NON_EXISTENT_ID)
+        //    ->willReturn(null); // Service returns null for not found
+        // 3. Instantiate controller (with service injection) and call display().
+        // 4. Assert sendResponse called with 404.
+        $this->assertTrue(true);
     }
 
-    public function testCreateProductSuccess()
+
+    public function testCreateProductDelegatesToService()
     {
-        // 1. Setup Mocks:
-        //    - $_SERVER['REQUEST_METHOD'] = 'POST'
-        //    - Tools::file_get_contents('php://input') to return valid JSON product data
-        //    - ProductDTO mock or real one
-        //    - Product mock:
-        //        - constructor
-        //        - hydrateProduct method expectation
-        //        - add() method returns true
-        //        - updateCategories() method expectation
-        //    - StockAvailable::setQuantity() expectation
-        //    - Db::getInstance()->Insert_ID() if product->add() doesn't set ID directly.
-        // 2. Instantiate and run controller's postProcess() or run()
-        // 3. Assertions:
-        //    - HTTP 201
-        //    - Product data in response matching input (or RTO output)
-        $this->assertTrue(true); // Placeholder
+        // Conceptual:
+        // 1. Mock $_SERVER['REQUEST_METHOD'] = 'POST'.
+        // 2. Mock getRequestBodyAsArray() to return valid DTO data.
+        // 3. Configure $this->mockProductService->method('getDtoClass')->willReturn(ProductDTO::class);
+        // 4. Configure $this->mockProductService->expects($this->once())->method('create')
+        //    ->with($this->isInstanceOf(ProductDTO::class))
+        //    ->willReturn(/* mock created Product object */);
+        // 5. Configure $this->mockProductService->method('getRtoClass')->willReturn(ProductRTO::class);
+        // 6. Instantiate controller (with service injection) and call postProcess().
+        // 7. Assert sendResponse called with 201 and RTO data.
+        $this->assertTrue(true);
     }
 
-    public function testCreateProductValidationError()
+    public function testCreateProductServiceReturnsError()
     {
-        // 1. Setup Mocks:
-        //    - $_SERVER['REQUEST_METHOD'] = 'POST'
-        //    - Tools::file_get_contents('php://input') to return JSON with invalid data (e.g., missing name)
-        //    - ProductDTO validate() method to return error messages
-        // 2. Instantiate and run controller
-        // 3. Assertions:
-        //    - HTTP 400
-        //    - Validation error messages in JSON response
-        $this->assertTrue(true); // Placeholder
+        // Conceptual:
+        // 1. Mock $_SERVER['REQUEST_METHOD'] = 'POST'.
+        // 2. Mock getRequestBodyAsArray().
+        // 3. Configure $this->mockProductService->method('getDtoClass')->willReturn(ProductDTO::class);
+        // 4. Configure $this->mockProductService->expects($this->once())->method('create')
+        //    ->willReturn(['errors' => ['Validation error from service']]);
+        // 5. Instantiate controller (with service injection) and call postProcess().
+        // 6. Assert sendResponse called with 400 and error messages.
+        $this->assertTrue(true);
     }
 
     // Similar conceptual tests for update (PUT) and delete (DELETE) operations:

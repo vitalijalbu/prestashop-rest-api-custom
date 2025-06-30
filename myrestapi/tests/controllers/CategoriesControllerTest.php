@@ -5,57 +5,54 @@ use PHPUnit\Framework\TestCase;
 // Required Mocks: MyRestApiCategoriesModuleFrontController, Category, CategoryDTO, CategoryRTO
 // Context, Tools, Db, Configuration, Validate, Language, Link etc.
 
+use MyRestApi\Services\CategoryService;
+use MyRestApi\Controllers\Core\AbstractResourceController;
+use MyRestApiCategoriesModuleFrontController;
+
 class CategoriesControllerTest extends TestCase
 {
+    private $mockCategoryService;
+
     protected function setUp(): void
     {
+        $this->mockCategoryService = $this->createMock(CategoryService::class);
+        // As with ProductsControllerTest, proper injection or reflection would be needed.
         $this->markTestSkipped(
-            'CategoriesController tests require significant mocking of PrestaShop core or a live PS environment.'
+            'CategoriesController tests are conceptual due to service instantiation in constructor. DI needed for pure unit tests.'
         );
     }
 
-    public function testListCategories()
+    public function testListCategoriesDelegatesToService()
     {
-        // 1. Setup Mocks: Context, Db (for executeS, getValue), Tools::getValue, Category, CategoryRTO
-        // 2. Instantiate Controller
-        // 3. Call display() or run()
-        // 4. Assert: HTTP 200, JSON structure, pagination details
+        // Conceptual: Similar to ProductsControllerTest.testListProductsDelegatesToService
+        // Mock service getList, getById, getRtoClass
+        // Instantiate controller with mock service (if possible)
+        // Call display()
+        // Assert sendResponse behavior
         $this->assertTrue(true);
     }
 
-    public function testGetCategoryFound()
+    public function testGetCategoryDelegatesToService()
     {
-        // 1. Setup Mocks: Tools::getValue('id_category'), Category (loaded), CategoryRTO
-        // 2. Instantiate Controller
-        // 3. Call display() or run()
-        // 4. Assert: HTTP 200, correct category data
+        // Conceptual: Similar to ProductsControllerTest.testGetSpecificProductDelegatesToService
         $this->assertTrue(true);
     }
 
-    public function testGetCategoryNotFound()
+    public function testGetCategoryNotFoundDelegatesAndHandles()
     {
-        // 1. Setup Mocks: Tools::getValue('id_category'), Category (not loaded)
-        // 2. Instantiate Controller
-        // 3. Call display() or run()
-        // 4. Assert: HTTP 404
+        // Conceptual: Similar to ProductsControllerTest.testGetSpecificProductNotFoundDelegatesAndHandles
         $this->assertTrue(true);
     }
 
-    public function testCreateCategorySuccess()
+    public function testCreateCategoryDelegatesToService()
     {
-        // 1. Mocks: $_SERVER, Tools::file_get_contents, CategoryDTO (valid), Category (add() returns true), Db (Insert_ID)
-        // 2. Instantiate Controller
-        // 3. Call postProcess() or run()
-        // 4. Assert: HTTP 201, category data in response
+        // Conceptual: Similar to ProductsControllerTest.testCreateProductDelegatesToService
         $this->assertTrue(true);
     }
 
-    public function testCreateCategoryValidationError()
+    public function testCreateCategoryServiceReturnsError()
     {
-        // 1. Mocks: $_SERVER, Tools::file_get_contents (invalid data), CategoryDTO (validate() returns errors)
-        // 2. Instantiate Controller
-        // 3. Call postProcess() or run()
-        // 4. Assert: HTTP 400, error messages
+        // Conceptual: Similar to ProductsControllerTest.testCreateProductServiceReturnsError
         $this->assertTrue(true);
     }
 
